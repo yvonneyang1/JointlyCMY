@@ -690,11 +690,13 @@ void separateCM(struct pxm_img *halftoneCM, struct pxm_img *halftoneC, struct px
 }
 
 // remove dots
-struct pxm_img* removeDots(struct pxm_img *halftone, unsigned int changelines, int modNum, int MatrixSize, int MaxLevel, int movNum, int screenNum)
+struct pxm_img* removeDots(struct pxm_img *halftone, unsigned int changelines, int modNum, int MatrixSize, int MaxLevel, int screenNum)
 {
 	int count = 0;
 	//double randVal;
 
+	double movNum = floor(MatrixSize*MatrixSize/MaxLevel);
+	printf("movNum is %.5f\n", movNum);
 
 	if (MOD(changelines , modNum) == 0){
 		movNum = movNum + screenNum;
@@ -715,9 +717,12 @@ struct pxm_img* removeDots(struct pxm_img *halftone, unsigned int changelines, i
 }
 // Add dots
 
-struct pxm_img* addDots(struct pxm_img *halftone, int changeline, int modNum, int movNum)
+struct pxm_img* addDots(struct pxm_img *halftone, int changeline, int modNum, int MatrixSize, int MaxLevel)
 {
 	double count = 0;
+
+	double movNum = floor(MatrixSize*MatrixSize/MaxLevel);
+	printf("movNum is %.5f\n", movNum);
 
 	if (MOD(changeline , modNum) == 0){
 			movNum = movNum +1;

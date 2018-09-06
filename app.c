@@ -1,12 +1,11 @@
 ﻿
 /******************************************************************
-* File: app.c
+* File: dbs.c
 * Authors: Yi Yang, Purdue University (built upon David Lieberman code)
 * Date: Dec 2017
-* Last update: Mar 2018 
 * Implementing: Jointly design Cyan, Magenta and Yellow screens using DBS
-* It can write out matrix as "txt" or halftone pattern as "tif"
-* Note that code can be easily changed
+* It can write out matrix as "txt" or halftone image as "tif"
+* Note that code can be easily changed so that
 *******************************************************************/
 
 
@@ -116,7 +115,7 @@ int main(int argc, char **argv) {
 	//-------------------------------------------------------------------------------------------------------------------------------------------------------------
 	//-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-	for (unsigned int seqId = 1; seqId <= 85; seqId++){
+	for (unsigned int seqId = 1; seqId <=85; seqId++){
 
 		fprintf(stdout,"\n***********************************************************************************************************");
 		fprintf(stdout, "\n \t\t\t  MATRIX size %u Processing order: 85->0 (Level %u)", config->MatrixSize, (85 - seqId +1));
@@ -134,11 +133,11 @@ int main(int argc, char **argv) {
 
 		double differ = 85 - currentlevel;
 
-		halftoneC = removeDots(halftoneC, differ, 4, config->MatrixSize, config->MaxLevel, 64, 1);
-		halftoneM = removeDots(halftoneM, differ, 4, config->MatrixSize, config->MaxLevel, 64, 1);
-		halftoneY = removeDots(halftoneY, differ, 4, config->MatrixSize, config->MaxLevel, 64, 1);
+		halftoneC = removeDots(halftoneC, differ, 4, config->MatrixSize, config->MaxLevel,  1);
+		halftoneM = removeDots(halftoneM, differ, 4, config->MatrixSize, config->MaxLevel,  1);
+		halftoneY = removeDots(halftoneY, differ, 4, config->MatrixSize, config->MaxLevel,  1);
 
-		
+		printf("TEST \n");
 		double test325 =  countNum(halftoneC);
 		double test326 =  countNum(halftoneM);
 		double test327 =  countNum(halftoneY);
@@ -161,13 +160,6 @@ int main(int argc, char **argv) {
 		performCompleteDBSForScreenDesign(config, inputImageC1,halftoneY,cpeY,halftoneY,cpeY,
 				halftoneY, cpeY, beforeY,beforeY, beforeY, cpp, 2);
 
-/*
-
-		printf("TEST 6 \n");
-		writeHalftoneImage(halftoneC, config->outputImagePath1);
-		writeHalftoneImage(halftoneM, config->outputImagePath2);
-		writeHalftoneImage(halftoneY, config->outputImagePath3);
-*/
 
 
 
@@ -203,7 +195,7 @@ int main(int argc, char **argv) {
 
 		// Optimize overall uniform pattern
 
-		for (int i = 0; i<5; i++){
+		for (int i = 0; i<10; i++){
 
 			printf("Iteration %d : Jointly optimize C and Y patterns  \n", i+1);
 
@@ -219,20 +211,6 @@ int main(int argc, char **argv) {
 			performCompleteDBSForScreenDesign(config,inputImageC2,halftoneC,cpeC,differC,cpeC,differM,cpeM,
 					beforeC,beforeC,beforeC,cpp, 1);
 		}
-
-
-
-
-		/*switch (level){
-
-		case 84: writeHalftoneImage(halftoneC, config->outputImagePath1);writeHalftoneImage(halftoneM, config->outputImagePath2);
-		writeHalftoneImage(halftoneY, config->outputImagePath3);break;
-
-		case 83: writeHalftoneImage(halftoneC, config->outputImagePath4);writeHalftoneImage(halftoneM, config->outputImagePath5);
-		writeHalftoneImage(halftoneY, config->outputImagePath6); break;
-
-		default: printf("donnot need to write out \n"); break;
-		}*/
 
 
 		updateMatrix(halftoneC, matrixC, currentlevel, 1, beforeC);
@@ -291,16 +269,15 @@ int main(int argc, char **argv) {
 
 		double differ = 129 - currentlevel;
 
-		printf("TEST \n");
 		double test61 =  countNum(htY);
 		printf("before remove is %f\n ", test61);
 
-		double remdots = 126;
-		if (currentlevel == 128){
-			remdots = 127;
-		}
 
-		htY = removeDots(htY, differ, 2, config->MatrixSize, config->MaxLevel, remdots, 2);
+		int Ytwdots = ceil (((config->MaxLevel)/2)+2);
+		printf("Ytwdots is %d\n", Ytwdots );
+
+
+		htY = removeDots(htY, differ, 2, config->MatrixSize,Ytwdots, 2);
 
 		struct doubleImage *inputImageY = generateCTImage(htY);
 
@@ -318,8 +295,6 @@ int main(int argc, char **argv) {
 
 		differY = findDifference(htY, beforeY, differY);
 
-
-		
 		double test6 =  countNum(differY);
 		printf("The differY is %f\n ", test6);
 
@@ -351,7 +326,7 @@ int main(int argc, char **argv) {
 		cpeM = calculateCpe(inputImageC, htM, cpp);
 
 
-		for (int i = 0; i<3; i++){
+		for (int i = 0; i<5; i++){
 
 			printf("Iteration %d :Jointly optimize C and M patterns\n",i+1);
 			performCompleteDBSForScreenDesign(config,inputImageC,htY,cpeY,htC,cpeC,htM,cpeM,
@@ -364,17 +339,6 @@ int main(int argc, char **argv) {
 
 		writeMatrix(matrixC, config->outputMatrixCPath);
 		writeMatrix(matrixM, config->outputMatrixMPath);
-
-
-		/*switch (level){
-
-
-		case 127: writeHalftoneImage(htC, config->outputImagePath7);writeHalftoneImage(htM, config->outputImagePath8); break;
-
-		case 126: writeHalftoneImage(htC, config->outputImagePath10);writeHalftoneImage(htM, config->outputImagePath11); break;
-
-		default: printf("donnot need to write out \n"); break;
-		}*/
 
 
 		//FREE memories
@@ -397,14 +361,6 @@ int main(int argc, char **argv) {
 		free_pxm(beforeM);
 		free_pxm(beforeY);
 	}
-
-
-
-	/*printf("TEST \n");
-
-	double test526 =  countNum(htM);
-	double test527 =  countNum(htC);
-	printf("C, M ,Y after remove %f,%f\n ",  test526, test527);*/
 
 	//-------------------------------------------------------------------------------------------------------------------------------------------------------------
 	//-------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -431,7 +387,7 @@ int main(int argc, char **argv) {
 
 		if (currentlevel<129){
 
-			ht2Y = addDots (ht2Y,differ,2,64);
+			ht2Y = addDots (ht2Y,differ,2,config->MatrixSize, config->MaxLevel);
 			printf("add dots\n");
 			double count = countNum(ht2Y);
 			printf("Y dots is %f\n", count);
@@ -451,7 +407,7 @@ int main(int argc, char **argv) {
 		else{
 
 			// C screen
-			htC = addDots (htC,differ,2,64);
+			htC = addDots (htC,differ,2,config->MatrixSize, config->MaxLevel);
 			printf("add dots\n");
 			double count2 = countNum(htC);
 			printf("C dots is %f\n", count2);
@@ -464,7 +420,7 @@ int main(int argc, char **argv) {
 
 
 			// M screen
-			htM = addDots (htM,differ,2,64);
+			htM = addDots (htM,differ,2,config->MatrixSize, config->MaxLevel);
 			printf("add dots\n");
 			double count1 = countNum(htM);
 			printf("M dots is %f\n", count1);
@@ -476,7 +432,7 @@ int main(int argc, char **argv) {
 			writeMatrix(matrixM, config->outputMatrixMPath);
 
 			// Y screen
-			ht2Y = addDots (ht2Y,differ,2,64);
+			ht2Y = addDots (ht2Y,differ,2,config->MatrixSize, config->MaxLevel);
 			printf("add dots\n");
 			double count = countNum(ht2Y);
 			printf("Y dots is %f\n", count);
@@ -488,10 +444,7 @@ int main(int argc, char **argv) {
 			writeMatrix(matrixY, config->outputMatrixYPath);
 
 
-			/*printf("TEST \n");
-			double test425 =  countNum(htC);
-			double test426 =  countNum(htM);
-			double test427 =  countNum(ht2Y);
+			/*
 			printf("C, M ,Y after remove  %f\n ", test425, test426, test427);
 
 			switch (level){
@@ -561,21 +514,28 @@ int main(int argc, char **argv) {
 
 // Allocates and populate the configuration options used in DBS Mono with default values.
 Config* getConfigurations() {
-
 	Config *config = malloc(sizeof(Config));
 
-	config->inputImagePath = "../samples/CMY-85.tif";
-	config->inputImagePath2 = "../samples/C-85.tif";
-	config->inputImagePath3 = "../samples/CMY-3.tif";
 
-	config->initialHalftonePath = "../samples/CMY-initial.tif";
-	//config->initialHalftonePath2 = "samples/yy3.tif";
-
-	//config->outputImagePath = "out/C130.tif";
-	//config->outputImagePath1 = "out/C84.tif";
+// FOR ECLIPSE
+	//config->inputImagePath = "samples/CT-CMY-512.tif";
+	//config->inputImagePath2 = "samples/CT-C-512.tif";
+	//config->initialHalftonePath = "samples/CMY-initial-512.tif";
 
 
-	// Size of matric
+	//config->outputMatrixCPath ="out/512CMatrix.txt";
+	//config->outputMatrixMPath ="out/512MMatrix.txt";
+	//config->outputMatrixYPath ="out/512YMatrix.txt";
+
+
+	//config->outputImagePath = "../out/C130.tif";
+	//config->outputImagePath1 = "../out/C84.tif";
+
+
+
+	config->inputImagePath = "../samples/CT-CMY-128.tif";
+	config->inputImagePath2 = "../samples/CT-C-128.tif";
+	config->initialHalftonePath = "../samples/CMY-initial-128.tif";
 
 	config->MatrixSize = 128;
 	config->MaxLevel = 255;
@@ -583,7 +543,6 @@ Config* getConfigurations() {
 	config->outputMatrixCPath ="../out/128CMatrix.txt";
 	config->outputMatrixMPath ="../out/128MMatrix.txt";
 	config->outputMatrixYPath ="../out/128YMatrix.txt";
-
 
 
 	config->scaleFactor = 3500;

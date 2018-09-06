@@ -159,9 +159,9 @@ struct pxm_img* findDifference(struct pxm_img *halftone, struct pxm_img *before,
 
 void separateCM(struct pxm_img *halftoneCM, struct pxm_img *halftoneC, struct pxm_img *halftoneM,double Cratio, double Mratio);
 
-struct pxm_img* removeDots(struct pxm_img *halftone, unsigned int changelines,int modNum, int MatrixSize, int MaxLevel, int movNum, int screenNum);
+struct pxm_img* removeDots(struct pxm_img *halftone, unsigned int changelines,int modNum, int MatrixSize, int MaxLevel, int screenNum);
 
-struct pxm_img* addDots(struct pxm_img *halftone, int changeline, int modNum, int movNum);
+struct pxm_img* addDots(struct pxm_img *halftone, int changeline, int modNum, int MatrixSize, int MaxLevel);
 
 //struct pxm_img* addDots(struct pxm_img *halftoneC, struct pxm_img *halftone, int MatrixSize, int MaxLevel, int changeline);
 
