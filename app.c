@@ -421,9 +421,9 @@ int main(int argc, char **argv) {
 
 			// M screen
 			htM = addDots (htM,differ,2,config->MatrixSize, config->MaxLevel);
-			printf("add dots\n");
+// 			printf("add dots\n");
 			double count1 = countNum(htM);
-			printf("M dots is %f\n", count1);
+// 			printf("M dots is %f\n", count1);
 			struct doubleImage *inputImageM = generateCTImage(htM);
 			struct doubleImage *cpeM = calculateCpe(inputImageM, htM, cpp);
 			performCompleteDBSForScreenDesign(config, inputImage,htM,cpeM,htM,cpeM,htM, cpeM,
@@ -433,31 +433,15 @@ int main(int argc, char **argv) {
 
 			// Y screen
 			ht2Y = addDots (ht2Y,differ,2,config->MatrixSize, config->MaxLevel);
-			printf("add dots\n");
+// 			printf("add dots\n");
 			double count = countNum(ht2Y);
-			printf("Y dots is %f\n", count);
+// 			printf("Y dots is %f\n", count);
 			struct doubleImage *inputImageY = generateCTImage(ht2Y);
 			struct doubleImage *cpeY = calculateCpe(inputImageY, ht2Y, cpp);
 			performCompleteDBSForScreenDesign(config, inputImage,ht2Y,cpeY,ht2Y,cpeY,
 					ht2Y, cpeY, beforeY,beforeY, beforeY, cpp, 2);
 			updateMatrix(ht2Y, matrixY, currentlevel, 1, beforeY);
 			writeMatrix(matrixY, config->outputMatrixYPath);
-
-
-			/*
-			printf("C, M ,Y after remove  %f\n ", test425, test426, test427);
-
-			switch (level){
-
-			case 127: writeHalftoneImage(ht2Y, config->outputImagePath9);break;
-			case 126: writeHalftoneImage(ht2Y, config->outputImagePath12);break;
-
-
-			case 200: writeHalftoneImage(htC, config->outputImagePath13);writeHalftoneImage(htM, config->outputImagePath14);
-			writeHalftoneImage(ht2Y, config->outputImagePath15); break;
-
-			default: printf("donnot need to write out \n"); break;
-			}*/
 
 
 
@@ -515,23 +499,6 @@ int main(int argc, char **argv) {
 // Allocates and populate the configuration options used in DBS Mono with default values.
 Config* getConfigurations() {
 	Config *config = malloc(sizeof(Config));
-
-
-// FOR ECLIPSE
-	//config->inputImagePath = "samples/CT-CMY-512.tif";
-	//config->inputImagePath2 = "samples/CT-C-512.tif";
-	//config->initialHalftonePath = "samples/CMY-initial-512.tif";
-
-
-	//config->outputMatrixCPath ="out/512CMatrix.txt";
-	//config->outputMatrixMPath ="out/512MMatrix.txt";
-	//config->outputMatrixYPath ="out/512YMatrix.txt";
-
-
-	//config->outputImagePath = "../out/C130.tif";
-	//config->outputImagePath1 = "../out/C84.tif";
-
-
 
 	config->inputImagePath = "../samples/CT-CMY-128.tif";
 	config->inputImagePath2 = "../samples/CT-C-128.tif";
